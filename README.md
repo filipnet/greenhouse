@@ -3,7 +3,7 @@
 Automation and monitoring of greenhouse
 
 > **⚠ NOTE**  
-> Especially in product descriptions of this project it may happen that the national language German is used. This project is still in the development phase, so far only the irrigation and light and ventilation have been realized. Further sensor technology such as temperature, humidity, brightness are in planning and will therefore be added successively.
+> Especially in product descriptions of this project it may happen that the language German is used. This project is still in the development phase, so far only the irrigation, light and ventilation have been realized. Further sensor technology such as temperature, humidity, brightness are in planning and will therefore be added successively.
 
 ## Vitavia Greenhouse "Apollo 5000" anthracite, 4 mm HKP
 
