@@ -1,0 +1,588 @@
+[
+    {
+        "id": "6570fe49e63bda97",
+        "type": "mqtt out",
+        "z": "b5f962662ea7b6de",
+        "name": "",
+        "topic": "home/outdoor/greenhouse/pump",
+        "qos": "2",
+        "retain": "false",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "89c47141.2fd35",
+        "x": 1490,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "b91835cd7ffddd45",
+        "type": "function",
+        "z": "b5f962662ea7b6de",
+        "name": "Create messages",
+        "func": "if (msg.payload === \"on\" && msg.topic === \"home/outdoor/greenhouse/automatic\") {\n    msg.topic = \"[INFO] GREENHOUSE | Automatische Bewässerung gestartet\";\n    msg.payload = \"GARTENHAUS | Die automatische Bewässerung wurde gestartet.\";\n}\nelse if (msg.payload === \"off\" && msg.topic === \"home/outdoor/greenhouse/automatic\"){\n    msg.topic = \"[INFO] GREENHOUSE | Automatische Bewässerung beendet\";\n    msg.payload = \"GARTENHAUS | Die automatische Bewässerung wurde beendet.\";\n}\nelse if (msg.payload === \"on\" && msg.topic === \"home/outdoor/greenhouse/pump/trigger\") {\n    msg.topic = \"[INFO] GREENHOUSE | Manuelle Bewässerung gestartet\";\n    msg.payload = \"GARTENHAUS | Die manuelle Bewässerung wurde gestartet.\";\n}\nelse if (msg.payload === \"off\" && msg.topic === \"home/outdoor/greenhouse/pump/trigger\"){\n    msg.topic = \"[INFO] GREENHOUSE | Manuelle Bewässerung beendet\";\n    msg.payload = \"GARTENHAUS | Die manuelle Bewässerung wurde beendet.\";\n}\nelse if (msg.payload === \"off\" && msg.topic === \"timeout\"){\n    msg.topic = \"[INFO] GREENHOUSE | Manuelle Bewässerung wurde nach Timeout beendet\";\n    msg.payload = \"GARTENHAUS | Die manuelle Bewässerung wurde nach Timeout beendet.\";\n}\nelse if (msg.payload === \"on\" && msg.topic === \"home/outdoor/greenhouse/emergencystop\"){\n    msg.topic = \"[ALERT] GREENHOUSE | Emergency STOP wurde initiiert\";\n    msg.payload = \"GARTENHAUS | Emergency STOP wurde von Arduino initiiert\";\n}\nelse {\n msg.topic = \"\";\n msg.payload = \"\";\n return null;\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1450,
+        "y": 200,
+        "wires": [
+            [
+                "7103ad3b4347dc1c"
+            ]
+        ]
+    },
+    {
+        "id": "81951cd0cb4cfaca",
+        "type": "schedex",
+        "z": "b5f962662ea7b6de",
+        "name": "",
+        "passthroughunhandled": false,
+        "suspended": false,
+        "lat": "49.9014",
+        "lon": "8.2986",
+        "ontime": "06:00",
+        "ontopic": "home/outdoor/greenhouse/automatic",
+        "onpayload": "on",
+        "onoffset": 0,
+        "onrandomoffset": false,
+        "offtime": "06:02",
+        "offtopic": "home/outdoor/greenhouse/automatic",
+        "offpayload": "off",
+        "offoffset": 0,
+        "offrandomoffset": 0,
+        "mon": true,
+        "tue": true,
+        "wed": true,
+        "thu": true,
+        "fri": true,
+        "sat": true,
+        "sun": true,
+        "x": 770,
+        "y": 440,
+        "wires": [
+            [
+                "a1b2044e9e69ee82",
+                "5de4c6d689f9b951"
+            ]
+        ]
+    },
+    {
+        "id": "6481f133404f44b3",
+        "type": "schedex",
+        "z": "b5f962662ea7b6de",
+        "name": "",
+        "passthroughunhandled": false,
+        "suspended": false,
+        "lat": "49.9014",
+        "lon": "8.2986",
+        "ontime": "20:15",
+        "ontopic": "home/outdoor/greenhouse/automatic",
+        "onpayload": "on",
+        "onoffset": 0,
+        "onrandomoffset": false,
+        "offtime": "20:17",
+        "offtopic": "home/outdoor/greenhouse/automatic",
+        "offpayload": "off",
+        "offoffset": 0,
+        "offrandomoffset": 0,
+        "mon": true,
+        "tue": true,
+        "wed": true,
+        "thu": true,
+        "fri": true,
+        "sat": true,
+        "sun": true,
+        "x": 770,
+        "y": 720,
+        "wires": [
+            [
+                "a1b2044e9e69ee82",
+                "0fdc45dc0f5fbef9"
+            ]
+        ]
+    },
+    {
+        "id": "bfb3145c8e0fd314",
+        "type": "stoptimer",
+        "z": "b5f962662ea7b6de",
+        "duration": "120",
+        "units": "Second",
+        "payloadtype": "str",
+        "payloadval": "off",
+        "name": "max. 120 sec. off",
+        "x": 630,
+        "y": 240,
+        "wires": [
+            [],
+            [
+                "71fe485c0e873750"
+            ]
+        ]
+    },
+    {
+        "id": "71fe485c0e873750",
+        "type": "function",
+        "z": "b5f962662ea7b6de",
+        "name": "check pump state",
+        "func": "greenhouse_pump_state = global.get(\"gv_greenhouse_pump_state\");\n\nif (msg.payload === \"off\" && greenhouse_pump_state == \"on\"){\n    msg.topic = \"timeout\";\n    msg.payload = \"off\";\n    return msg;\n} else {\n    return;\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 850,
+        "y": 240,
+        "wires": [
+            [
+                "a1b2044e9e69ee82"
+            ]
+        ]
+    },
+    {
+        "id": "367327a8ed7f1678",
+        "type": "mqtt in",
+        "z": "b5f962662ea7b6de",
+        "name": "",
+        "topic": "home/outdoor/greenhouse/automatic/morning",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "89c47141.2fd35",
+        "nl": false,
+        "rap": false,
+        "x": 210,
+        "y": 440,
+        "wires": [
+            [
+                "81951cd0cb4cfaca"
+            ]
+        ]
+    },
+    {
+        "id": "7103ad3b4347dc1c",
+        "type": "function",
+        "z": "b5f962662ea7b6de",
+        "name": "msg.payload to telegram",
+        "func": "msg.payload = {\n    chatId : '-123456789', \n    type : 'message', \n    content : msg.payload,\n    options : {\n        disable_notification: true\n    }\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1670,
+        "y": 200,
+        "wires": [
+            [
+                "038c11a9134320a1"
+            ]
+        ]
+    },
+    {
+        "id": "038c11a9134320a1",
+        "type": "telegram sender",
+        "z": "b5f962662ea7b6de",
+        "name": "",
+        "bot": "da14e081.e1382",
+        "outputs": 1,
+        "x": 1890,
+        "y": 200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "509aa5f0153db7a9",
+        "type": "change",
+        "z": "b5f962662ea7b6de",
+        "name": "Set global variable greenhouse_pump_state",
+        "rules": [
+            {
+                "t": "move",
+                "p": "payload",
+                "pt": "msg",
+                "to": "gv_greenhouse_pump_state",
+                "tot": "global"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1530,
+        "y": 240,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "631ff9830de8bac3",
+        "type": "mqtt in",
+        "z": "b5f962662ea7b6de",
+        "name": "",
+        "topic": "home/outdoor/greenhouse/pump/trigger",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "89c47141.2fd35",
+        "nl": false,
+        "rap": false,
+        "x": 190,
+        "y": 280,
+        "wires": [
+            [
+                "a1b2044e9e69ee82",
+                "4fa2486fbea6ef87"
+            ]
+        ]
+    },
+    {
+        "id": "d62c702d0519b58f",
+        "type": "mqtt in",
+        "z": "b5f962662ea7b6de",
+        "name": "",
+        "topic": "home/outdoor/greenhouse/automatic/evening",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "89c47141.2fd35",
+        "nl": false,
+        "rap": false,
+        "x": 210,
+        "y": 720,
+        "wires": [
+            [
+                "6481f133404f44b3"
+            ]
+        ]
+    },
+    {
+        "id": "a1b2044e9e69ee82",
+        "type": "function",
+        "z": "b5f962662ea7b6de",
+        "name": "Consolidate",
+        "func": "\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1210,
+        "y": 280,
+        "wires": [
+            [
+                "509aa5f0153db7a9",
+                "b91835cd7ffddd45",
+                "6570fe49e63bda97"
+            ]
+        ]
+    },
+    {
+        "id": "7cd867c40baf468e",
+        "type": "mqtt in",
+        "z": "b5f962662ea7b6de",
+        "name": "",
+        "topic": "home/outdoor/greenhouse/emergencystop",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "89c47141.2fd35",
+        "nl": false,
+        "rap": false,
+        "x": 200,
+        "y": 200,
+        "wires": [
+            [
+                "b91835cd7ffddd45"
+            ]
+        ]
+    },
+    {
+        "id": "76843547a158ec4e",
+        "type": "mqtt in",
+        "z": "b5f962662ea7b6de",
+        "name": "",
+        "topic": "home/outdoor/greenhouse/#",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "89c47141.2fd35",
+        "nl": false,
+        "rap": false,
+        "x": 160,
+        "y": 120,
+        "wires": [
+            [
+                "7a3b1ec12f6e4a6c"
+            ]
+        ]
+    },
+    {
+        "id": "4b9b659527b5946d",
+        "type": "file",
+        "z": "b5f962662ea7b6de",
+        "name": "",
+        "filename": "/var/log/nodered/mqtt_greenhouse.log",
+        "appendNewline": true,
+        "createDir": false,
+        "overwriteFile": "false",
+        "encoding": "none",
+        "x": 630,
+        "y": 120,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "7a3b1ec12f6e4a6c",
+        "type": "function",
+        "z": "b5f962662ea7b6de",
+        "name": "Create Logfile",
+        "func": "msg.timestamp = global.get(\"gv_now_timestamp\");\nmsg.payload = msg.timestamp+\" \"+msg.topic+\" \"+msg.payload;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 380,
+        "y": 120,
+        "wires": [
+            [
+                "4b9b659527b5946d"
+            ]
+        ]
+    },
+    {
+        "id": "4fa2486fbea6ef87",
+        "type": "switch",
+        "z": "b5f962662ea7b6de",
+        "name": "payload = on",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "on",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 450,
+        "y": 240,
+        "wires": [
+            [
+                "bfb3145c8e0fd314"
+            ]
+        ]
+    },
+    {
+        "id": "0313c472158055fd",
+        "type": "mqtt in",
+        "z": "b5f962662ea7b6de",
+        "name": "",
+        "topic": "home/outdoor/greenhouse/pump/duration",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "89c47141.2fd35",
+        "nl": false,
+        "rap": false,
+        "x": 200,
+        "y": 580,
+        "wires": [
+            [
+                "e05baa2f59d91b23",
+                "a6667317fe93ca3c"
+            ]
+        ]
+    },
+    {
+        "id": "e05baa2f59d91b23",
+        "type": "change",
+        "z": "b5f962662ea7b6de",
+        "name": "Set global variable greenhouse_pump_duration",
+        "rules": [
+            {
+                "t": "move",
+                "p": "payload",
+                "pt": "msg",
+                "to": "gv_greenhouse_pump_duration",
+                "tot": "global"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 580,
+        "y": 560,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "5de4c6d689f9b951",
+        "type": "function",
+        "z": "b5f962662ea7b6de",
+        "name": "",
+        "func": "greenhouse_pump_duration = global.get(\"gv_greenhouse_pump_duration\");\ngreenhouse_pump_ontime = msg.payload.ontime;\n\np = greenhouse_pump_ontime.split(\":\")\nontime_sec = (p[0]*60)*60 + (p[1]*60)\nduration_sec = (greenhouse_pump_duration)\nofftime_sec = (ontime_sec + duration_sec*60)\n\nvar Hours = ((offtime_sec)/3600);\nHours = Math.floor(Hours);\nvar Minutes = (offtime_sec-(Hours*3600))/60;\nMinutes = Math.floor(Minutes);\n// Concatenate\nvar Time = ('0' +Hours).slice(-2)+':'+('0' +Minutes).slice(-2);\n\nmsg.payload = Time;\n\nnode.status({fill:\"grey\",shape:\"dot\",text:\"calculated offtime: \"+msg.payload});\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 700,
+        "y": 340,
+        "wires": [
+            [
+                "198281864750c455"
+            ]
+        ]
+    },
+    {
+        "id": "a6667317fe93ca3c",
+        "type": "function",
+        "z": "b5f962662ea7b6de",
+        "name": "Get scheduler info",
+        "func": "msg.payload = \"info\"\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 490,
+        "y": 600,
+        "wires": [
+            [
+                "6481f133404f44b3",
+                "81951cd0cb4cfaca"
+            ]
+        ]
+    },
+    {
+        "id": "198281864750c455",
+        "type": "change",
+        "z": "b5f962662ea7b6de",
+        "name": "set offtime",
+        "rules": [
+            {
+                "t": "move",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.offtime",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 850,
+        "y": 340,
+        "wires": [
+            [
+                "81951cd0cb4cfaca"
+            ]
+        ]
+    },
+    {
+        "id": "0fdc45dc0f5fbef9",
+        "type": "function",
+        "z": "b5f962662ea7b6de",
+        "name": "",
+        "func": "greenhouse_pump_duration = global.get(\"gv_greenhouse_pump_duration\");\ngreenhouse_pump_ontime = msg.payload.ontime;\n\np = greenhouse_pump_ontime.split(\":\")\nontime_sec = (p[0]*60)*60 + (p[1]*60)\nduration_sec = (greenhouse_pump_duration*60)\nofftime_sec = (ontime_sec + duration_sec)\n\nvar Hours = ((offtime_sec)/3600);\nHours = Math.floor(Hours);\nvar Minutes = (offtime_sec-(Hours*3600))/60;\nMinutes = Math.floor(Minutes);\n// Concatenate\nvar Time = ('0' +Hours).slice(-2)+':'+('0' +Minutes).slice(-2);\n\nmsg.payload = Time;\n\nnode.status({fill:\"grey\",shape:\"dot\",text:\"calculated offtime: \"+msg.payload});\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 700,
+        "y": 820,
+        "wires": [
+            [
+                "9875f64ef406680b"
+            ]
+        ]
+    },
+    {
+        "id": "9875f64ef406680b",
+        "type": "change",
+        "z": "b5f962662ea7b6de",
+        "name": "set offtime",
+        "rules": [
+            {
+                "t": "move",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.offtime",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 850,
+        "y": 820,
+        "wires": [
+            [
+                "6481f133404f44b3"
+            ]
+        ]
+    },
+    {
+        "id": "89c47141.2fd35",
+        "type": "mqtt-broker",
+        "name": "mqtt.domain.de",
+        "broker": "mqtt.domain.de",
+        "port": "8883",
+        "tls": "dab1e87b.a61058",
+        "clientid": "nodered-servername",
+        "usetls": true,
+        "compatmode": true,
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": ""
+    },
+    {
+        "id": "da14e081.e1382",
+        "type": "telegram bot",
+        "botname": "GreenhouseBot",
+        "usernames": "",
+        "chatids": "-123456789",
+        "baseapiurl": "",
+        "pollinterval": "300",
+        "usesocks": false,
+        "sockshost": "",
+        "socksport": "",
+        "socksusername": "",
+        "sockspassword": "",
+        "bothost": "",
+        "localbotport": "",
+        "publicbotport": "",
+        "privatekey": "",
+        "certificate": "",
+        "useselfsignedcertificate": false,
+        "sslterminated": false,
+        "verboselogging": false
+    },
+    {
+        "id": "dab1e87b.a61058",
+        "type": "tls-config",
+        "name": "",
+        "cert": "",
+        "key": "",
+        "ca": "",
+        "certname": "",
+        "keyname": "",
+        "caname": "",
+        "servername": "",
+        "verifyservercert": false
+    }
+]
