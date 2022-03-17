@@ -1,15 +1,45 @@
 ## SENSORS
 
-### HUMIDITY AND TEMPERATURE
+### HUMIDITY AND TEMPERATURE FS200-SHT10
 
 Requirements:
 - Measuring range 0 ... 100% rH, -20 ... +100°C
 - Splash-proof for outdoor applications
 
-Products:
-- https://files2.elv.com/public/11/1133/113343/Internet/113343_feuchtesensor_data.pdf
-- https://www.reichelt.com/de/de/digitaler-feuchte-temperatursensor-0--100-rf-40--12-hyt-221-p105995.html?r=1 | 26,50 €
-- https://www.conrad.de/de/p/ist-ag-feuchte-und-temperatur-sensor-1-st-hyt-221-messbereich-0-100-rf-l-x-b-x-h-15-3-x-10-2-x-5-3-mm-505671.html | 36,34 €
-- https://de.elv.com/bb-sensors-feuchtesensor-hyt221-0-100-rh-sil4-113343?fs=2569197907 | 22,61 €
-- https://shop.bb-sensors.com/Messtechnik-je-Branche/Maschinenbau/Digitaler-Feuchte-Temperatursensor-HYT221-bub.html | 24,03 €
-- https://www.az-delivery.de/products/gy-21-temperatur-sensor-modul?_pos=38&_sid=4be93bad9&_ss=r | 24.99 €
+**Sharainn soil moisture sensor, FS200-SHT10 3.3-5 V soil temperature and humidity sensor probe** - 20 100-100 ℃ 0-100% relative humidity sensor for agricultural greenhouses.
+
+https://www.amazon.de/gp/product/B08M64WS15/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&psc=1
+
+#### DESCRIPTION
+
+The soil temperature and humidity probe, using the original temperature and humidity sensors as the core component, can be directly connected to the single chip microcomputer for use. With very high consistency, it can be completely interchangeable. The probe has the characteristics of temperature resistance, pressure resistance, loss of ability, suitability for agricultural greenhouse, flowers, nursery, lawn and other needs to detect soil temperature and humidity.
+
+#### TECHNICAL DATA
+
+- Model: FS200 - SHT10
+- Type: temperature and humidity
+- Production process: integration
+- Output signal: numeric type
+- Technical parameters:
+- Working voltage: 3.3-5V
+- Operating current: 15mA
+- Temperature measuring range: - 20 ~ 100
+- Humidity measurement range: 0 ~ 100% rH
+- Working conditions: - 20 90 ca. 90 , 0 ca. 99% rH
+- Storage conditions: - 20 ca. 80 ca., 0 ~ 95% rH
+- Weight: 70g
+
+#### PINOUT
+
+| Sensor-Description | Sensor-PIN | Arduino-PIN | GPIO |
+| --- | --- | --- | --- |
+| FS200-SHT10 soil temperature and humidity sensor | VCC (RED) | 5V | - |
+| FS200-SHT10 soil temperature and humidity sensor | GND (BLACK) | GND | - |
+| FS200-SHT10 soil temperature and humidity sensor | SDA (GREEN) | D2 | GPIO 4 |
+| FS200-SHT10 soil temperature and humidity sensor | SCK/SCL (YELLOW) | D1 | GPIO 5 |
+
+Relay has to be switched in production to:
+| Sensor-Description | Sensor-PIN | Arduino-PIN | GPIO |
+| --- | --- | --- | --- |
+| SRD-05VDC-SL-C Relais	| IN1 | D5 | GPIO 14 |
+| SRD-05VDC-SL-C Relais	| IN2 | D6 | GPIO 12 |

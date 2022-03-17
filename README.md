@@ -120,14 +120,14 @@ Ritos LED-Feuchtraumleuchte mit Sensor Grau 24 W
 
 ### PINOUT
 
-| Sensor-Description | Sensor-PIN | Arduino-PIN |
-| --- | --- | --- |
-| SRD-05VDC-SL-C Relais	| GND | GND |
-| SRD-05VDC-SL-C Relais	| IN1	| D1 |
-| SRD-05VDC-SL-C Relais	| IN2	| D2 |
-| SRD-05VDC-SL-C Relais	| VCC	| 5.0 V |	
-| SRD-05VDC-SL-C Relais	| NO1 + COM1 | Phase L (230V) Pump |
-| SRD-05VDC-SL-C Relais	| NO2 + COM2 | Phase L (230V) Light |
+| Sensor-Description | Sensor-PIN | Arduino-PIN | GPIO |
+| --- | --- | --- | --- |
+| SRD-05VDC-SL-C Relais	| GND | GND | - |
+| SRD-05VDC-SL-C Relais	| IN1	| D1 | - |
+| SRD-05VDC-SL-C Relais	| IN2	| D2 | - |
+| SRD-05VDC-SL-C Relais	| VCC	| 5.0 V |	- |
+| SRD-05VDC-SL-C Relais	| NO1 + COM1 | Phase L (230V) Pump | - |
+| SRD-05VDC-SL-C Relais	| NO2 + COM2 | Phase L (230V) Light | - |
 
 ### INTEGRATION OF A SWITCH
 
