@@ -129,7 +129,7 @@ Ritos LED-Feuchtraumleuchte mit Sensor Grau 24 W
 | SRD-05VDC-SL-C Relais	| VCC	| 5.0 V |	- |
 | SRD-05VDC-SL-C Relais	| NO1 + COM1 | Phase L (230V) Pump | - |
 | SRD-05VDC-SL-C Relais	| NO2 + COM2 | Phase L (230V) Light | - |
-| FS200-SHT10 soil temperature and humidity sensor | VCC (RED) | 5.0 V | - |
+| FS200-SHT10 soil temperature and humidity sensor | VCC (RED) | 3.3 V | - |
 | FS200-SHT10 soil temperature and humidity sensor | GND (BLACK) | GND | - |
 | FS200-SHT10 soil temperature and humidity sensor | SDA (GREEN) | D2 | GPIO 4 |
 | FS200-SHT10 soil temperature and humidity sensor | SCK/SCL (YELLOW) | D1 | GPIO 5 |
