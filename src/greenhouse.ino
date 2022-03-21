@@ -4,6 +4,7 @@
 #include <WiFiClientSecure.h>
 #include <ESP8266mDNS.h>
 #include <PubSubClient.h>
+#include <SHT1x-ESP.h>
 #include "credentials.h"
 #include "config.h"
 
@@ -17,13 +18,24 @@ const char *mqttPassword = MQTT_PASSWORD;
 const char *mqttID = MQTT_ID;
 const int relayPump = RELAY_PUMP;
 const int relayLight = RELAY_LIGHT;
+const int dataPin = SDA_PIN;
+const int clockPin = SCL_PIN;
 
 unsigned long heartbeat_previousMillis = 0;
 const long heartbeat_interval = HEARTBEAT_INTERVALL;
 
+unsigned long sensor_previousMillis = 0;
+const long sensor_interval = SENSOR_INTERVALL;
 unsigned long emergencystop_previousMillis = 0;
 const long emergencystop_threshold = EMERGENCYSTOP_THRESHOLD;
 bool emergencystop_running = false;
+float temperature_local;
+float humidity_local;
+
+// default to 5.0v boards, e.g. Arduino UNO
+// SHT1x sht1x(dataPin, clockPin);
+// if 3.3v board is used (recommended)
+SHT1x sht1x(dataPin, clockPin, SHT1x::Voltage::DC_3_3v);
 
 WiFiClientSecure espClient;
 PubSubClient client(espClient);
@@ -36,6 +48,8 @@ void setup() {
   pinMode(relayPump, OUTPUT);
   digitalWrite(relayLight, HIGH);
   pinMode(relayLight, OUTPUT);
+  pinMode(dataPin, INPUT);
+  pinMode(clockPin, INPUT);
   espClient.setInsecure();
   reconnect();
 }
@@ -135,10 +149,20 @@ void callback(char* topic, byte* payload, unsigned int length) {
 void loop() {
   client.loop();
   reconnect();
+  sensor();
   heartbeat();
   switchontime();
   emergencystop();
   mqttloop();
+}
+
+void sensor() {
+  unsigned long sensor_currentMillis = millis();
+  if (sensor_currentMillis - sensor_previousMillis >= sensor_interval) {
+    sensor_previousMillis = sensor_currentMillis;
+    readsensor_sht10();
+    Serial.println("");
+  }
 }
 
 bool emergencystop_running_prev = false;
@@ -199,7 +223,7 @@ void setCisternStatus(char* topic, byte* payload, unsigned int length) {
     if (mqttPayload == "on") {
       Serial.println("Switch on greenhouse pump");
       digitalWrite(relayPump, LOW);
-      pinStatus = digitalRead(relayPump);
+      int pinStatus = digitalRead(relayPump);
       Serial.print("Status of GPIO pin ");
       Serial.print(relayPump);
       Serial.print(" is ");
@@ -211,7 +235,7 @@ void setCisternStatus(char* topic, byte* payload, unsigned int length) {
     } else if (mqttPayload == "off") {
       Serial.println("Switch off greenhouse pump");
       digitalWrite(relayPump, HIGH);
-      pinStatus = digitalRead(relayPump);
+      int pinStatus = digitalRead(relayPump);
       Serial.print("Status of GPIO pin ");
       Serial.print(relayPump);
       Serial.print(" is ");
@@ -230,7 +254,7 @@ void setCisternStatus(char* topic, byte* payload, unsigned int length) {
     if (mqttPayload == "on") {
       Serial.println("Switch on light");
       digitalWrite(relayLight, LOW);
-      pinStatus = digitalRead(relayLight);
+      int pinStatus = digitalRead(relayLight);
       Serial.print("Status of GPIO pin ");
       Serial.print(relayLight);
       Serial.print(" is ");
@@ -240,7 +264,7 @@ void setCisternStatus(char* topic, byte* payload, unsigned int length) {
     } else if (mqttPayload == "off") {
       Serial.println("Switch off light");
       digitalWrite(relayLight, HIGH);
-      pinStatus = digitalRead(relayLight);
+      int pinStatus = digitalRead(relayLight);
       Serial.print("Status of GPIO pin ");
       Serial.print(relayLight);
       Serial.print(" is ");
@@ -252,4 +276,28 @@ void setCisternStatus(char* topic, byte* payload, unsigned int length) {
     }
   }
   Serial.println("");  
+}
+
+void readsensor_sht10() {
+  temperature_local = sht1x.readTemperatureC();
+  Serial.print("Temperature: ");
+  Serial.print(temperature_local, DEC);
+  Serial.println(" *C");
+  static char temperature_local_char[7];
+  dtostrf(temperature_local, 1, 2, temperature_local_char);
+  Serial.print("  MQTT publish home/outdoor/greenhouse/temperature: ");
+  Serial.println(temperature_local_char);
+  client.publish("home/outdoor/greenhouse/temperature", temperature_local_char, true);
+  delay(100);
+
+  humidity_local = sht1x.readHumidity();
+  Serial.print("Humidity: ");
+  Serial.print(humidity_local);
+  Serial.println(" %");
+  static char humidity_local_char[7];
+  dtostrf(humidity_local, 1, 2, humidity_local_char);
+  Serial.print("  MQTT publish home/outdoor/greenhouse/humidity: ");
+  Serial.println(humidity_local_char);
+  client.publish("home/outdoor/greenhouse/humidity", humidity_local_char, true);
+  delay(100);
 }

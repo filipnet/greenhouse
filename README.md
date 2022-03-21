@@ -108,6 +108,7 @@ Ritos LED-Feuchtraumleuchte mit Sensor Grau 24 W
 - Sends a heartbeat signal to the MQTT broker periodically
 - Switches a double relay for cistern pump and a socket
 - Checks the status of the pump and switches it off automatically after a certain time (threshold value) if no switch-off signal is received by the specified time (protection against greenhouse flooding)
+- Measuring temperature and humidity with a FS200-SHT10 sensor
 
 ## REQUIREMENTS
 
@@ -123,11 +124,15 @@ Ritos LED-Feuchtraumleuchte mit Sensor Grau 24 W
 | Sensor-Description | Sensor-PIN | Arduino-PIN | GPIO |
 | --- | --- | --- | --- |
 | SRD-05VDC-SL-C Relais	| GND | GND | - |
-| SRD-05VDC-SL-C Relais	| IN1	| D1 | - |
-| SRD-05VDC-SL-C Relais	| IN2	| D2 | - |
+| SRD-05VDC-SL-C Relais	| IN1 | D5 | GPIO 14 |
+| SRD-05VDC-SL-C Relais	| IN2 | D6 | GPIO 12 |
 | SRD-05VDC-SL-C Relais	| VCC	| 5.0 V |	- |
 | SRD-05VDC-SL-C Relais	| NO1 + COM1 | Phase L (230V) Pump | - |
 | SRD-05VDC-SL-C Relais	| NO2 + COM2 | Phase L (230V) Light | - |
+| FS200-SHT10 soil temperature and humidity sensor | VCC (RED) | 5.0 V | - |
+| FS200-SHT10 soil temperature and humidity sensor | GND (BLACK) | GND | - |
+| FS200-SHT10 soil temperature and humidity sensor | SDA (GREEN) | D2 | GPIO 4 |
+| FS200-SHT10 soil temperature and humidity sensor | SCK/SCL (YELLOW) | D1 | GPIO 5 |
 
 ### INTEGRATION OF A SWITCH
 
@@ -137,6 +142,42 @@ After some research, it is basically possible **in parallel to the relay to swit
 
 - PubSubClient by Nick O'Leary
 - esp8266_mdns by dunk
+- SHT1x-ESP by Bernd Giesecke (Works on 3.3V without external 10k resistor)
+
+Tested but but library does not work with D1 Mini
+- SHT1x by Practical Arduino - The Book
+- SHT1x by Vincent Pang
+
+## SENSORS
+
+### HUMIDITY AND TEMPERATURE FS200-SHT10
+
+Requirements:
+- Measuring range 0 ... 100% rH, -20 ... +100°C
+- Splash-proof for outdoor applications
+
+**Sharainn soil moisture sensor, FS200-SHT10 3.3-5 V soil temperature and humidity sensor probe** - 20 100-100 ℃ 0-100% relative humidity sensor for agricultural greenhouses.
+
+https://www.amazon.de/gp/product/B08M64WS15/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&psc=1
+
+#### DESCRIPTION
+
+The soil temperature and humidity probe, using the original temperature and humidity sensors as the core component, can be directly connected to the single chip microcomputer for use. With very high consistency, it can be completely interchangeable. The probe has the characteristics of temperature resistance, pressure resistance, loss of ability, suitability for agricultural greenhouse, flowers, nursery, lawn and other needs to detect soil temperature and humidity.
+
+#### TECHNICAL DATA
+
+- Model: FS200 - SHT10
+- Type: temperature and humidity
+- Production process: integration
+- Output signal: numeric type
+- Technical parameters:
+- Working voltage: 3.3-5V
+- Operating current: 15mA
+- Temperature measuring range: - 20 ~ 100
+- Humidity measurement range: 0 ~ 100% rH
+- Working conditions: - 20 90 ca. 90 , 0 ca. 99% rH
+- Storage conditions: - 20 ca. 80 ca., 0 ~ 95% rH
+- Weight: 70g
 
 ### UNDERSTANDING RELAY HIGH AND LOW
 
