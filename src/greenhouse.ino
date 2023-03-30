@@ -48,7 +48,11 @@ void setup() {
   pinMode(relayPump, OUTPUT);
   digitalWrite(relayLight, HIGH);
   pinMode(relayLight, OUTPUT);
-  pinMode(dataPin, INPUT);
+  /** https://www.sparkfun.com/datasheets/Sensors/SHT1x_datasheet.pdf
+      To avoid signal contention the microcontroller must only drive DATA (dataPin) low. An external pull-up resistor (e.g. 10kΩ) 
+      is required to pull the signal high – it should be noted that pull-up resistors may be included in I/O circuits of
+      microcontrollers. **/
+  pinMode(dataPin, INPUT_PULLUP);
   pinMode(clockPin, INPUT);
   espClient.setInsecure();
   reconnect();
